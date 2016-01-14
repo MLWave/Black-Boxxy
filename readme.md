@@ -80,6 +80,116 @@ Contribution    Column
 0.000000        0
 ```
 
+## Dark Knowledge Neighbourhood
+
+`dark_knowledge_neighbourhood.py` finds previous (explained) multi-class predictions which are close to the current prediction.
+
+For data we use an 8x8 digit dataset with 10 classes. For our black box model we use an average of SVM with a linear kernel and Extremely Randomized Trees with a 1000 estimators.
+
+### Algorithm description and output
+
+This method introduces an "Explanation set". This is a kind of test set used to explain black box predictions. This explanation set may be labeled 
+with descriptive explanations (using experts or crowd-sourcing). We store the multi-class predictions for this explanation set.
+
+```
+X_train         1383x64
+X_test          75x64
+X_explain       339x64
+
+Support Vector Machine with linear kernel
+Accuracy Score: 0.986667
+Multi-Log loss: 0.079983
+
+
+Calibrated Extremely Randomized Trees
+Accuracy Score: 0.986667
+Multi-Log loss: 0.070617
+
+
+Black Box Ensemble model(average(svm, rf))
+Accuracy Score: 0.986667
+Multi-Log loss: 0.074331
+```
+
+When we receive a new test sample we create multi-class probability prediction for it with the black-box model.
+
+```
+Predicted:      9 (0.944547)
+```
+
+We then find n nearest neighbours from the explanation set (Note: we rank top n samples that received a similar prediction, we only look at predictions, not features).
+
+We show the nearest neighbours labels (ground truth) and check if these are accurate/consistent. We also report the total distance between the test sample predictions and the nearest neighbour predictions (lower is better, if too high, increase the explanation set size).
+
+```
+Neighbours:     9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9
+Distance:       0.062994
+```
+
+![Explain digits](http://i.imgur.com/QzMPLUu.png)
+
+If the explanation set is labeled with descriptions we present the first few:
+
+```
+Explanation:    "Single loop. Full bottom curve. Slightly slanted to the left. Looks like the digit 'nine'."
+```
+
+Now we take n random samples from the explanation set and add these to the nearest prediction neighbours to create a small dataset. We label the nearest prediction samples `1` and the random samples `0`.
+
+We then train a shallow decision tree and logistic regression (two white-box models) on this small dataset (using the original features) and report 5-fold cross-validation AUC score.
+
+```
+Decision Tree:  0.55625 AUC (+/- 0.08926)
+LogReg:         0.76250 AUC (+/- 0.08970)
+```
+
+A white-box explanation model is eligible when it correctly predicts the new test sample, and has decent generalization (CV-score).
+
+```
+LogReg predicts `1` for new test sample, thus is eligible.
+Decision Tree predicts `1` for new test sample, thus is eligible.
+```
+
+You can build different seeded decision trees, 'till you get an eligible model with decent generalization.
+
+Finally, we visualize the explanation models. The Decision Tree is turned into a GraphViz file: 
+
+![Decision Tree](http://i.imgur.com/yzsVTiX.png) 
+
+and the LogReg model shows the features that were indicative of the sample being labeled "1": ![LogReg Feature Importance](http://i.imgur.com/WO6DHTW.png)
+
+### Intuition
+
+We have a 3-class non-linear classification problem with a single feature x (age) and a bit of noise added.
+```
+y A A A B B B C C A A
+x 0 1 2 3 4 5 6 7 8 9 
+```
+For instance, when x == 6 then y == class C.
+
+We have as an explanation model a simple linear model that can do only a single split. Such a model is not able to fully separate class A from class B and C (it needs at least two splits for this, `x < 3 and x > 7`).
+
+We have a black-box model that can separate the three classes perfectly and can output multi-class predictions.
+
+A new test sample comes in where x == 8. The black-box model predicts [0.84, 0.01, 0.15] or 84% probability of class A, 1% of class B and 15% of class C.
+
+We find 10 nearest prediction neighbours from the explanation set. These samples likely have similar features to the new test sample. We also take 10 random samples from the explanation set.
+
+After turning the problem into a binary classification problem we may get:
+
+```
+y 0 0 0 0 0 0 0 1 1 1
+x 0 1 2 3 4 5 6 7 8 9 
+```
+
+This we *can* separate with a single split (x > 6? 1 else 0). We used the dark knowledge of a black box ensemble model to create a much simpler linear sub-problem. Neighbouring samples were found using the fact that class "C" was deemed more probable than class "B".
+
+The white-box explanation may be: "Black-box predicted an A, because the variable 'age' is larger than 6.". Not perfect, but close enough.
+
+### References
+
+Eligible models is from Turner's Model Explanation System. Stacking is from Wolpert's Stacked Generalization. Dark Knowledge is Hinton et al. transfer learning. Nearest predictions is an idea from Enlitic (they use layer activations for this).
+
 ## A Model Explanation System
 
 Todo
