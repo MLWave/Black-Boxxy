@@ -111,7 +111,7 @@ Accuracy Score: 0.986667
 Multi-Log loss: 0.074331
 ```
 
-When we receive a new test sample we create multi-class probability prediction for it with the black-box model.
+When we receive a new test sample (![Digit 9](http://i.imgur.com/F39NgrP.png)) we create multi-class probability prediction for it with the black-box model.
 
 ```
 Predicted:      9 (0.944547)
@@ -126,7 +126,7 @@ Neighbours:     9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9
 Distance:       0.062994
 ```
 
-![Explain digits](http://i.imgur.com/QzMPLUu.png)
+
 
 If the explanation set is labeled with descriptions we present the first few:
 
