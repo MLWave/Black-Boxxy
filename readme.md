@@ -126,7 +126,7 @@ Neighbours:     9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9
 Distance:       0.062994
 ```
 
-
+![Explain digits](http://i.imgur.com/QzMPLUu.png)
 
 If the explanation set is labeled with descriptions we present the first few:
 
