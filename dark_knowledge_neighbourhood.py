@@ -4,6 +4,13 @@ import numpy as np
 from collections import Counter
 from scipy.misc import imsave
 
+##################################################################################
+#   __author__:       HJ van Veen <info@mlwave.com>                              #
+#   __description__:  Using Dark Knowledge to explain Black Box predictions with # 
+#                     Simple white-box models                                    #
+#   __license__:      CC0 1.0 Universal                                          #
+##################################################################################
+
 if __name__ == "__main__":
 
   X, y = datasets.load_digits().data, datasets.load_digits().target
