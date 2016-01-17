@@ -186,9 +186,56 @@ This we *can* separate with a single split (x > 6? 1 else 0). We used the dark k
 
 The white-box explanation may be: "Black-box predicted an A, because the variable 'age' is larger than 6.". Not perfect, but close enough.
 
+### Zero-shot
+
+We leave the class 'digit 9' from the train set and retrain our ensemble black box model. We create multi-class predictions for the explanation set (this explanation set does contain samples of class 'digit 9'). 
+
+Now for new test samples labeled 'digit 9' we ask the ensemble to explain its prediction neighbourhood.
+
+```
+Predicted:      3 (0.803607)
+Neighbours:     [9] 9 9 9 9 9 9 9 3 3 9 3 3 3 3 3 3 3 3 3
+Counter({3: 11, 9: 9})
+Distance:       0.449837
+
+Predicted:      3 (0.632486)
+Neighbours:     [9] 9 9 9 9 9 9 5 9 9 3 9 3 9 9 9 3 9 9 9
+Counter({9: 16, 3: 3, 5: 1})
+Distance:       0.748975
+
+Predicted:      3 (0.559741)
+Neighbours:     [5] 9 9 9 9 9 9 9 9 9 9 3 9 9 3 9 9 9 9 9
+Counter({9: 17, 3: 2, 5: 1})
+Distance:       0.558236
+
+Predicted:      3 (0.632028)
+Neighbours:     [9] 9 9 9 9 5 9 9 3 9 9 3 9 9 9 9 3 9 9 9
+Counter({9: 16, 3: 3, 5: 1})
+Distance:       0.524373
+
+Predicted:      3 (0.808942)
+Neighbours:     [9] 3 9 3 9 9 9 9 9 9 3 9 3 3 3 3 3 3 3 3
+Counter({3: 11, 9: 9})
+Distance:       0.348610
+
+Predicted:      3 (0.750614)
+Neighbours:     [9] 9 9 9 3 9 9 9 9 9 3 9 3 9 3 3 9 3 9 3
+Counter({9: 13, 3: 7})
+Distance:       0.444025
+
+Predicted:      5 (0.814363)
+Neighbours:     [5] 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5
+Counter({5: 20})
+Distance:       0.515372
+```
+
+5 out of 7 times, the 1-nearest prediction neighbour was able to present the correct class -- using predictions from a black box model that has never seen that class during training.
+
+![zeroshot](http://i.imgur.com/1T8D1cv.png) 
+
 ### References
 
-Eligible models is from Turner's Model Explanation System. Stacking is from Wolpert's Stacked Generalization. Dark Knowledge is Hinton et al. transfer learning. Nearest predictions is an idea from Enlitic (they use layer activations for this).
+Eligible models is from Turner's Model Explanation System. Stacking is from Wolpert's Stacked Generalization. Dark Knowledge is Hinton et al. transfer learning. Nearest predictions is an idea from Enlitic (they use layer activations for this). Zero-data learning of digits is Larochelle et al.
 
 ## A Model Explanation System
 
