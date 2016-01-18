@@ -233,9 +233,33 @@ Distance:       0.515372
 
 ![zeroshot](http://i.imgur.com/1T8D1cv.png) 
 
+### Mapping Dark Knowledge
+
+Treat the output of a black box ensemble as a TDA function and apply Mapper on this. For data use 10-class 8x8 digit data set, for black-box ensemble Calibrated Extremely Randomized Trees with a 1000 estimators, and for mapping KeplerMapper.
+
+We create out-of-5-fold 10-class probability predictions for the entire data set.
+
+We try to visualize how a black-box model predicts 'digit 9'. 
+
+- We remove all samples where black-box did not predict a 9. 
+- We calculate the mean of the predictions
+- We calculate the absolute difference between a sample prediction and the mean
+- The ninth column abs('prediction for 9'-'mean prediction for 9') becomes our lens.
+- For clustering we use k-means++ with 3 clusters, 8 overlapping intervals, and 90% overlap.
+
+![topology](http://i.imgur.com/RMnJUKk.png) 
+
+We can spot which samples are troublesome for the black-box. We can spot different types of 'digit 9' that received a similar prediction.
+
+Using only the prediction column for "digit 1", one can also use Mapper to guide a cluster algorithm on the inverse image:
+
+![topology](http://i.imgur.com/cJN5ohG.png) 
+
+We were able to produce pleasing clusters for other digits than "digit 1", using black-box predictions for "digit 1".
+
 ### References
 
-Eligible models is from Turner's Model Explanation System. Stacking is from Wolpert's Stacked Generalization. Dark Knowledge is Hinton et al. transfer learning. Nearest predictions is an idea from Enlitic (they use layer activations for this). Zero-data learning of digits is Larochelle et al.
+Eligible models is from Turner's Model Explanation System. Stacked Generalization and State Space Compression is from Wolpert et al. Dark Knowledge and Semantic Output Code classification is Hinton et al. transfer and zero-shot learning. Nearest predictions is an idea from Enlitic (they use layer activations for this). Zero-data learning of digits is Larochelle et al.. Mapper is Gurjeet Singh et al..
 
 ## A Model Explanation System
 
