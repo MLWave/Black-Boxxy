@@ -257,9 +257,15 @@ Using only the prediction column for "digit 1", one can also use Mapper to guide
 
 We were able to produce pleasing clusters for other digits than "digit 1", using black-box predictions for "digit 1".
 
+Another example where clear regions with similar digits appeared:
+
+![topology](http://i.imgur.com/WgvU6G5.png) 
+
+Nodes with the digits '8' appeared, solely in relation to how much the black-box predicted these digits looked like the digit "1".
+
 ### References
 
-Eligible models is from Turner's Model Explanation System. Stacked Generalization and State Space Compression is from Wolpert et al. Dark Knowledge and Semantic Output Code classification is Hinton et al. transfer and zero-shot learning. Nearest predictions is an idea from Enlitic (they use layer activations for this). Zero-data learning of digits is Larochelle et al.. Mapper is Gurjeet Singh et al..
+Eligible models is from Turner's Model Explanation System. Stacked Generalization and State Space Compression is from Wolpert et al. Dark Knowledge and Semantic Output Code classification is Hinton et al. transfer and zero-shot learning. Nearest predictions is an idea from Enlitic (they use layer activations for this). Zero-data learning of digits is Larochelle et al.. Mapper is Singh et al..
 
 ## A Model Explanation System
 
