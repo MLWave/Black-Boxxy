@@ -269,7 +269,7 @@ Eligible models is from Turner's Model Explanation System. Stacked Generalizatio
 
 ## XGBoost Decision Paths
 
-We use ELI5 library to provide explainations for XGBoost models and model predictions. This replicates to a large degree the excellent post [Interpreting Decision Trees and Random Forests](http://engineering.pivotal.io/post/interpreting-decision-trees-and-random-forests/) by Greg Tam for gradient boosted decision trees.
+See `eli.py`. We use ELI5 library to provide explainations for XGBoost models and model predictions. This replicates to a large degree the excellent post [Interpreting Decision Trees and Random Forests](http://engineering.pivotal.io/post/interpreting-decision-trees-and-random-forests/) by Greg Tam and extends it to gradient boosted decision trees.
 
 ### Model Explanations
 
