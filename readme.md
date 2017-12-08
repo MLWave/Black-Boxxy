@@ -267,6 +267,140 @@ Nodes with the digits '8' appeared, solely in relation to how much the black-box
 
 Eligible models is from Turner's Model Explanation System. Stacked Generalization and State Space Compression is from Wolpert et al. Dark Knowledge and Semantic Output Code classification is Hinton et al. transfer and zero-shot learning. Nearest predictions is an idea from Enlitic (they use layer activations for this). Zero-data learning of digits is Larochelle et al.. Mapper is Singh et al..
 
+## XGBoost Decision Paths
+
+We use ELI5 library to provide explainations for XGBoost models and model predictions. This replicates to a large degree the excellent post [Interpreting Decision Trees and Random Forests](http://engineering.pivotal.io/post/interpreting-decision-trees-and-random-forests/) by Greg Tam for gradient boosted decision trees.
+
+### Model Explanations
+
+```Python
+from sklearn import datasets
+
+X, y, f = datasets.load_boston().data, datasets.load_boston().target, datasets.load_boston().feature_names
+
+model = xgb.XGBRegressor()
+
+explainer = XGBExplainer(verbose=2)
+explainer.explain_model(model,
+                        X,
+                        y,
+                        feature_names=f,
+                        max_samples=260,
+                        visualize=True,
+                        temporal=True)
+```
+
+```
+Explaining model: XGBRegressor(base_score=0.5, colsample_bylevel=1, colsample_bytree=1, gamma=0,
+       learning_rate=0.1, max_delta_step=0, max_depth=3,
+       min_child_weight=1, missing=None, n_estimators=100, nthread=-1,
+       objective='reg:linear', reg_alpha=0, reg_lambda=1,
+       scale_pos_weight=1, seed=0, silent=True, subsample=1)
+
+Regression Problem
+
+Splitting data into 67% train and 33% train. Is temporal? True
+
+Fitting on data shaped (339, 13). Mean target: 25.142183
+
+Using 13 features: ['CRIM' 'ZN' 'INDUS' 'CHAS' 'NOX' 'RM' 'AGE' 'DIS' 'RAD' 'TAX' 'PTRATIO'
+ 'B' 'LSTAT']
+
+Importance: gain        Feature Name
+--------------------    --------------------
+            0.687155    RM
+            0.122762    LSTAT
+            0.032781    TAX
+            0.031916    PTRATIO
+            0.025528    NOX
+            0.020725    DIS
+            0.019334    INDUS
+            0.017637    AGE
+            0.011368    B
+            0.010895    CRIM
+            0.007768    CHAS
+            0.007123    RAD
+            0.005006    ZN
+
+Testing on data shaped (167, 13). Mean target: 17.235928
+
+Standard Deviation of predictions: 5.028404
+
+Mean Absolute Error :	4.519644 (benchmark: 5.770985)
+Mean Squared Error  :	45.417754 (benchmark: 66.116434)
+R2-Score            :	0.313064 (benchmark: 0.000000)
+Explained Variance  :	0.351315 (benchmark: 0.000000)
+
+Creating explanations for test set.
+
+`max_samples` larger than test set size. Resetting `max_samples` to 167
+
+1/167
+101/167
+```
+![img](https://i.imgur.com/nWKxleD.png)
+
+And for every feature:
+
+![img](https://i.imgur.com/FUiTqXT.png)
+
+### Sample explanation
+
+```Python
+df = pd.read_csv("credit-card-default.csv")
+f = [f for f in df.columns if f not in ["default payment next month"]]
+X, y = np.array(df[f]), np.array(df["default payment next month"])
+
+model = xgb.XGBClassifier()
+explainer = XGBExplainer(verbose=1)
+explainer.explain_model(model,
+                        X,
+                        y,
+                        feature_names=f,
+                        target_names=["non-default", "default"],
+                        max_samples=260,
+                        visualize=False,
+                        temporal=False)
+
+explainer.explain_sample(X[0], y=y[0])
+
+```
+
+```
+Explaining sample shaped 23
+
+FEATURE              VALUE      STD        MEAN
+PAY_0                2          1.794564   -0.016700
+PAY_2                2          1.782348   -0.133767
+PAY_5                -2         1.530046   -0.266200
+PAY_6                -2         1.486041   -0.291100
+LIMIT_BAL            20000      1.136720   167484.322667
+AGE                  24         1.246020   35.485500
+MARRIAGE             1          1.057295   1.551867
+```
+
+![img](https://i.imgur.com/rqutYck.png)
+
+### Params
+
+Param | Description
+---|---
+model | XGBoostClassifier() or XGBoostRegressor(). Required.
+X | 2-D NumPy array. Data. You can use the train set for this.
+y | 1-D NumPy array. Targets.
+feature_names | List. Human-readable feature names.
+target_names | List. Human-readable target names.
+max_samples | Int. Max samples to consider for plotting violin plots.
+visualize | Bool. Whether to show the plot images.
+temporal | Bool. Whether the data is temporal (forecasting).
+
+### References
+
+Credit card default data: https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients
+Pivotal blog: http://engineering.pivotal.io/post/interpreting-decision-trees-and-random-forests/
+ELI5: https://github.com/TeamHG-Memex/eli5
+Decision Paths: http://blog.datadive.net/interpreting-random-forests/
+
 ## A Model Explanation System
 
 Todo
