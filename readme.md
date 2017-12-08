@@ -280,7 +280,7 @@ X, y, f = datasets.load_boston().data,
           datasets.load_boston().target,
           datasets.load_boston().feature_names
 
-model = xgb.XGBRegressor()
+model = xgb.XGBRegressor(seed=0)
 
 explainer = XGBExplainer(verbose=2)
 explainer.explain_model(model,
@@ -353,7 +353,7 @@ df = pd.read_csv("credit-card-default.csv")
 f = [f for f in df.columns if f not in ["default payment next month"]]
 X, y = np.array(df[f]), np.array(df["default payment next month"])
 
-model = xgb.XGBClassifier()
+model = xgb.XGBClassifier(seed=0)
 explainer = XGBExplainer(verbose=1)
 explainer.explain_model(model,
                         X,
