@@ -276,7 +276,9 @@ We use ELI5 library to provide explainations for XGBoost models and model predic
 ```Python
 from sklearn import datasets
 
-X, y, f = datasets.load_boston().data, datasets.load_boston().target, datasets.load_boston().feature_names
+X, y, f = datasets.load_boston().data,
+          datasets.load_boston().target,
+          datasets.load_boston().feature_names
 
 model = xgb.XGBRegressor()
 
@@ -396,10 +398,10 @@ temporal | Bool. Whether the data is temporal (forecasting).
 
 ### References
 
-Credit card default data: https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients
-Pivotal blog: http://engineering.pivotal.io/post/interpreting-decision-trees-and-random-forests/
-ELI5: https://github.com/TeamHG-Memex/eli5
-Decision Paths: http://blog.datadive.net/interpreting-random-forests/
+- Credit card default data: https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients
+- Pivotal blog: http://engineering.pivotal.io/post/interpreting-decision-trees-and-random-forests/
+- ELI5: https://github.com/TeamHG-Memex/eli5
+- Decision Paths: http://blog.datadive.net/interpreting-random-forests/
 
 ## A Model Explanation System
 
